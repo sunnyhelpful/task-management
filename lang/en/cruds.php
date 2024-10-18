@@ -32,6 +32,13 @@ return [
         ],
     ],
 
+    'menus' => [
+        'dashboard' => 'Dashboard',
+        'setting' => 'Settings',
+        'user' => "Users",
+        'task'  => 'Tasks',
+    ],
+
     'task' =>  [
         'title'                      => 'Tasks',
         'title_singular'        => 'Task',
