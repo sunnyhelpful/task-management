@@ -285,4 +285,5 @@ return [
     'want_to_cancel_shift'                  => 'Do you want to cancel this shift ?',
     'welcome_to'                            => 'Welcome to',
     'data_not_found'                        => 'Data not found!',
+    'close'                                 => 'Close',
 ];

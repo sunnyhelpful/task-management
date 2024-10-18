@@ -19,6 +19,7 @@ class Task extends Model
         'description', 
         'status', 
         'due_date',
+        'position',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -29,6 +30,8 @@ class Task extends Model
         parent::boot();
         static::creating(function(Task $task) {
             $task->uuid = Str::uuid();
+            $maxPosition = Task::max('position');
+            $task->position = $maxPosition ? $maxPosition + 1 : 1;
         });
     }
 
