@@ -17,7 +17,7 @@ class TaskController extends ApiController
     public function index()
     {
         try {
-            $tasks = Task::orderBy('id', 'desc')->get();
+            $tasks = Task::orderBy('position', 'asc')->paginate(10);
             return $this->respondOk([
                 'status' => true,
                 'message' => trans('messages.data_retrieved_successfully'),
@@ -63,7 +63,7 @@ class TaskController extends ApiController
     public function show(string $id)
     {
         try {
-            $task = Task::where('uuid', $id)->firstOrFail();
+            $task = Task::where('id', $id)->firstOrFail();
             if (!$task) {
                 return $this->respondWithError(trans('messages.no_record_found'))->setStatusCode(Response::HTTP_NOT_FOUND);
             }
@@ -89,26 +89,26 @@ class TaskController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(TaskRequest $request, string $id)
-    {
-    try {
-        $task = Task::where('uuid', $id)->firstOrFail();
-        if (!$task) {
-            return $this->respondWithError(trans('messages.no_record_found'))->setStatusCode(Response::HTTP_NOT_FOUND);
+    public function update(TaskRequest $request, string $id){
+        try {
+            $validated = $request->validated();
+            $task = Task::where('id', $id)->firstOrFail();
+            if (!$task) {
+                return $this->respondWithError(trans('messages.no_record_found'))->setStatusCode(Response::HTTP_NOT_FOUND);
+            }
+
+            $task->update($validated);
+
+            return $this->respondOk([
+                'status' => true,
+                'message' => trans('messages.record_updated_successfully'),
+                'data' => new TaskResource($task),
+            ]);
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage().' '.$e->getFile().' '.$e->getCode());
+            return $this->respondWithError(trans('messages.error_message'))->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $validated = $request->validated();
-        $task->update($validated);
-
-        return $this->respondOk([
-            'status' => true,
-            'message' => trans('messages.record_updated_successfully'),
-            'data' => new TaskResource($task),
-        ]);
-    } catch (\Exception $e) {
-        return $this->respondWithError(trans('messages.error_message'))->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-}
 
 
     /**
@@ -117,7 +117,7 @@ class TaskController extends ApiController
     public function destroy(string $id)
     {
         try {
-            $task = Task::where('uuid', $id)->firstOrFail();
+            $task = Task::where('id', $id)->firstOrFail();
             $task->delete();
 
             return $this->respondOk([
