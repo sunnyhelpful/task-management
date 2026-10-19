@@ -4,6 +4,10 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
+
+
+
+
 class TitleValidationRule implements Rule
 {
     public function passes($attribute, $value)
